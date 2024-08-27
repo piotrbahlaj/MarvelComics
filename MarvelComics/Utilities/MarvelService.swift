@@ -38,7 +38,27 @@ class MarvelService {
         guard let url = buildURL(endpoint: "/comics") else {
             throw URLError(.badURL)
         }
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        if let httpResponse = response as? HTTPURLResponse {
+            print("HTTP Status Code: \(httpResponse.statusCode)")
+            if let contentType = httpResponse.allHeaderFields["Content-Type"] as? String {
+                print("Content-Type: \(contentType)")
+            } else {
+                print("Content-Type header is missing")
+            }
+        }
+        
+        if let responseString = String(data: data, encoding: .utf8) {
+            print("Raw response data: \(responseString)")
+        } else {
+            print("Unable to decode response data into a string")
+        }
+        
+        if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
+            throw URLError(.badServerResponse)
+        }
+        
         do {
             let decoded = try JSONDecoder().decode(ComicModel.self, from: data)
             return decoded.data.results
