@@ -15,12 +15,17 @@ struct ComicsResults: Decodable {
     let results: [Comic]
 }
 
-struct Comic: Decodable {
+struct Comic: Decodable, Identifiable {
     let id: Int
     let title: String
     let description: String?
+    let textObjects: [TextObject]?
     let thumbnail: Thumbnail
-    let creators: [CreatorsList]
+    let creators: CreatorsList
+}
+
+struct TextObject: Decodable {
+    let text: String
 }
 
 struct CreatorsList: Decodable {
@@ -33,9 +38,10 @@ struct Creators: Decodable {
 
 struct Thumbnail: Decodable{
     let path: String
-    let ext: CodingKeys
+    let `extension`: String
+    
+    var fullImageURL: URL? {
+        return URL(string: "\(path).\(`extension`)")
+    }
 }
 
- enum CodingKeys : String, Decodable {
-    case ext = "extension"
-    }
