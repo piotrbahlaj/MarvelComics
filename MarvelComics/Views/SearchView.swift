@@ -9,9 +9,25 @@ import Foundation
 import SwiftUI
 
 struct SearchView: View {
-    var body: some View {
-        Text("Search comics")
-            .font(.largeTitle)
-            .padding()
+    @StateObject private var viewModel = SearchViewModel()
+    var filteredComics: [Comic] {
+        return viewModel.searchedComics.filter{
+            $0.title.localizedCaseInsensitiveContains(viewModel.query)
+        }
     }
+    var body: some View {
+        NavigationStack{
+            if viewModel.query != "" {
+                List(filteredComics, id: \.id) {comic in
+                    ComicView(comic: comic)
+                }
+            } else {
+                Text("Try searching for something")
+                    .font(.body)
+                    .padding()
+                    .navigationTitle("Library")
+            }
+        }
+        .searchable(text: $viewModel.query, prompt: "Search for comics")
+    }   
 }
