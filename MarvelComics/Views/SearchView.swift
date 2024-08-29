@@ -17,17 +17,25 @@ struct SearchView: View {
     }
     var body: some View {
         NavigationStack{
-            if viewModel.query != "" {
-                List(filteredComics, id: \.id) {comic in
-                    ComicView(comic: comic)
+            VStack{
+                if viewModel.isLoading {
+                    ProgressView("Searching...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                } else if let errorMessage = viewModel.errorMessage {
+                    Text("Error: \(errorMessage)")
+                        .foregroundStyle(.red)
+                } else if !viewModel.searchedComics.isEmpty {
+                    List(filteredComics, id: \.id) { comic in
+                        ComicView(comic: comic)
+                    }
+                } else if viewModel.query.isEmpty {
+                    Text("Try searching for something" )
+                        .font(.body)
+                        .padding()
                 }
-            } else {
-                Text("Try searching for something")
-                    .font(.body)
-                    .padding()
-                    .navigationTitle("Library")
             }
+            .searchable(text: $viewModel.query, prompt: "Search for comics")
+            .navigationTitle("Comic library")
         }
-        .searchable(text: $viewModel.query, prompt: "Search for comics")
-    }   
+    }
 }
