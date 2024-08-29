@@ -8,6 +8,7 @@
 import SwiftUI
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
+    @State private var showSplash: Bool = true
     var body: some View {
         TabView{
             NavigationView{
