@@ -12,7 +12,6 @@ struct ComicView: View{
     let comic: Comic
     var body: some View {
         GeometryReader{ geometry in
-            NavigationLink(destination: DetailsView(comic: comic)){
                 HStack {
                     if let imageUrl = comic.thumbnail.fullImageURL {
                         AsyncImage(url: imageUrl) { image in
@@ -55,9 +54,8 @@ struct ComicView: View{
                 }
                 .shadow(radius: 5)
             }
-        }
         .frame(width: UIScreen.main.bounds.width / 1.1, height: 250)
-        .background(Color.white)
+        .background(NavigationLink("", destination: DetailsView(comic: comic)).opacity(0))
         
     }
 }

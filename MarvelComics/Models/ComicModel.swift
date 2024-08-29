@@ -22,6 +22,11 @@ struct Comic: Decodable, Identifiable {
     let textObjects: [TextObject]?
     let thumbnail: Thumbnail
     let creators: CreatorsList
+    let urls: [Urls]
+}
+
+struct Urls: Decodable {
+    let url: String
 }
 
 struct TextObject: Decodable {

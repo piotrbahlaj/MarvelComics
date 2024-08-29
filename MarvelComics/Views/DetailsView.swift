@@ -10,6 +10,10 @@ import SwiftUI
 
 struct DetailsView: View{
     var comic: Comic
+    @State private var showWebView: Bool = false
+    private var webViewURL: URL? {
+        URL(string: comic.urls.first?.url ?? "")
+    }
     var body: some View{
         ScrollView{
             VStack(alignment: .leading, spacing: 10) {
@@ -54,7 +58,7 @@ struct DetailsView: View{
                         .frame(alignment: .leading)
                 }
                 Button(action: {
-                    
+                    showWebView = true
                 }) {
                     Text("Find out more")
                         .frame(width: UIScreen.main.bounds.width / 1.1, height: 50, alignment: .center)
@@ -69,5 +73,12 @@ struct DetailsView: View{
 
         }
         .edgesIgnoringSafeArea(.top)
+        .sheet(isPresented: $showWebView) {
+            if let url = webViewURL {
+                WebView(url: url)
+            } else {
+                Text("No URL available")
+            }
+        }
     }
 }
